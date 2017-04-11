@@ -30,7 +30,7 @@
         "SubnetDbRef": "[concat(variables('vnetid'),'/subnets/',variables('SubnetDb'))]",
 
         "MariaDbSizeSmall": {
-           "vmSku": "Standard_DS2_v2",
+           "vmSku": "Standard_A1",
             "disks": [
                 {
                     "name": "datadisk1",
@@ -72,7 +72,7 @@
         },
                 
         "MariaDbSizeMedium": {
-           "vmSku": "Standard_DS3_v2",
+           "vmSku": "Standard_A1",
            "disks": [
                 {
                     "name": "datadisk1",
@@ -95,7 +95,7 @@
             ]           
         },         
         "MariaDbSizeLarge": {
-           "vmSku": "Standard_DS4_v2",
+           "vmSku": "Standard_A1",
            "disks": [
                 {
                     "name": "datadisk1",

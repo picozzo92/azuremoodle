@@ -30,7 +30,7 @@
       "value": "ptxmoo"
     },
     "vmSize": {
-      "value": "Standard_DS2"
+      "value": "Standard_A1"
     }
   }
 }

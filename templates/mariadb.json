@@ -59,7 +59,7 @@
                 "displayName": "MariaDb Storage Account"
             },
             "properties": {
-                "accountType": "Premium_LRS"
+                "accountType": "Standard_LRS"
             }
         },
         {

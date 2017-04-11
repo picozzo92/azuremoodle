@@ -31,7 +31,7 @@
         "SubnetSanRef": "[concat(variables('vnetID'),'/subnets/',variables('SubnetSan'))]",
 
         "GlusterSizeSmall": {
-           "vmSku": "Standard_DS2_v2",
+           "vmSku": "Standard_A1",
             "disks": [
                 {
                     "name": "datadisk1",
@@ -55,7 +55,7 @@
         },
                 
         "GlusterSizeMedium": {
-           "vmSku": "Standard_DS3_v2",
+           "vmSku": "Standard_A1",
            "disks": [
                 {
                     "name": "datadisk1",
@@ -96,7 +96,7 @@
             ]           
         },         
         "GlusterSizeLarge": {
-           "vmSku": "Standard_DS4_v2",
+           "vmSku": "Standard_A1",
            "disks": [
                 {
                     "name": "datadisk1",

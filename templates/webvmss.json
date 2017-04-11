@@ -128,7 +128,7 @@
             },
             "sku": {
                 "capacity": 10,
-                "name": "Standard_D2",
+                "name": "Standard_A2",
                 "tier": "Standard"
             },
             "properties": {

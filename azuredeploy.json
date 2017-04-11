@@ -12,14 +12,14 @@
         "vmSize" 
         : {
             "type": "string",
-            "defaultValue": "Standard_DS2",
+            "defaultValue": "Standard_A1",
             "metadata": {
                 "description": "VM size for the nodes"
             }
         },
         "GlusterVmSize": {
             "type": "string",
-            "defaultValue": "Standard_DS2",
+            "defaultValue": "Standard_A1",
             "metadata": {
                 "description": "VM size for the gluster nodes"
             }
@@ -93,7 +93,7 @@
         "gfsScaleNumber": 2,
         "SharedStorageAccountName": "[concat(variables('storageAcctName'), uniqueString(resourceGroup().id))]",
         "JumpVmOSDiskName": "JumpVmOSDisk",
-        "JumpVmVmSize": "Standard_D1",
+        "JumpVmVmSize": "Standard_A1",
         "JumpVmStorageAccountContainerName": "vhds",
         "diagnosticsStorageAccountName": "[variables('SharedStorageAccountName')]",
         "diagnosticsStorageAccountResourceGroup": "[resourceGroup().name]",
@@ -147,7 +147,7 @@
                 "count": "[variables('GfsScaleNumber')]"
             },
             "properties": {
-                "accountType": "Premium_LRS"
+                "accountType": "Standard_LRS"
             }
         },
         {
@@ -180,7 +180,7 @@
                 "displayName": "DatabaseStorageAccount"
             },
             "properties": {
-                "accountType": "Premium_LRS"
+                "accountType": "Standard_LRS"
             }
         },
         {
@@ -817,7 +817,7 @@
             },
             "sku": {
                 "capacity": 10,
-                "name": "Standard_D2",
+                "name": "Standard_A1",
                 "tier": "Standard"
             },
             "properties": {
