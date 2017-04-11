@@ -1,0 +1,186 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0", 
+ "parameters": {
+        "resPrefix": {
+            "type": "string",
+            "defaultValue": "moodle"
+        }, 
+        "MariaDbTshirtSize" : {
+            "type" : "string",
+            "defaultValue": "Small",
+            "allowedValues": [
+                "Small",
+                "Medium",
+                "Large"
+            ]
+        },
+        "adminUsername": {
+            "type": "string",
+            "defaultValue": "azureadmin",
+            "metadata": {
+                "description": "ssh user name"
+            }
+        },
+        "adminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "ssh password"
+            }
+        },
+        "baseTemplate": {
+            "type": "string",
+            "defaultValue": "https://raw.githubusercontent.com/pateixei/MoodleAzure/v2/",
+            "metadata": {
+                "description": "URL where templates are located"
+            }
+        }                
+  },
+  "variables": {
+        "rpfx" : "[tolower(parameters('resPrefix'))]",
+        "vnetName": "[concat(variables('rpfx'),'-vnet')]",
+        "storageAccount": "[concat('db',variables('rpfx'),'sa')]",
+        "vnetid": "[resourceId('Microsoft.Network/virtualNetworks',variables('vnetName'))]",
+        "SubnetDb": "[concat('data-',variables('rpfx'),'-subnet')]",
+        "SubnetDbRef": "[concat(variables('vnetid'),'/subnets/',variables('SubnetDb'))]",
+        "mariadblb": "[resourceId('Microsoft.Network/loadBalancers','mariadblb')]",        
+        "mariadbbe": "[concat(variables('mariadblb'),'/backendAddressPools/mariadbbe')]",
+        "mariadbfipc": "[concat(resourceId('Microsoft.Network/loadBalancers','mariadblb'),'/frontendIPConfigurations/mariadb-fipc')]",
+        "mariadbprobe": "[concat(resourceId('Microsoft.Network/loadBalancers','mariadblb'),'/probes/mariadb-probe')]"    
+  },     
+  "resources": 
+  [        
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('storageAccount')]",
+            "apiVersion": "2015-06-15",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "displayName": "MariaDb Storage Account"
+            },
+            "properties": {
+                "accountType": "Premium_LRS"
+            }
+        },
+        {
+            "name": "[concat('db-',variables('rpfx'),'-as')]",
+            "type": "Microsoft.Compute/availabilitySets",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2015-06-15",
+            "dependsOn": [],
+            "tags": {
+                "displayName": "MariaDb Availability Set"
+            },
+            "properties": {
+                "platformUpdateDomainCount": 5,
+                "platformFaultDomainCount": 3
+            }
+        },
+        {
+            "apiVersion": "2015-06-15",
+            "name": "mariadblb",
+            "type": "Microsoft.Network/loadBalancers",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "displayName": "MariaDb Internal Load Balancer"
+            },            
+            "properties": {
+                "frontendIPConfigurations": [
+                    {
+                        "name": "mariadb-fipc",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[variables('subnetDbRef')]"
+                            }
+                        }
+                    }
+                ],
+                "backendAddressPools": [
+                    {
+                        "name": "mariadbbe"
+                    }
+                ],
+                "loadBalancingRules": [
+                    {
+                        "name": "MariaDbListener",
+                        "properties": {
+                            "backendAddressPool": {
+                                "id": "[variables('mariadbbe')]"
+                            },
+                            "frontendIPConfiguration": {
+                                "id": "[variables('mariadbfipc')]"
+                            },
+                            "probe": {
+                                "id": "[variables('mariadbprobe')]"
+                            },
+                            "protocol": "tcp",
+                            "frontendPort": 3306,
+                            "backendPort": 3306,
+                            "enableFloatingIP": false
+                        }
+                    }
+                ],
+                "probes": [
+                    {
+                        "name": "mariadb-probe",
+                        "properties": {
+                            "protocol": "tcp",
+                            "port": 3306,
+                            "intervalInSeconds": "5",
+                            "numberOfProbes": "6"
+                        }
+                    }
+                ]
+            }
+        },        
+        {
+            "apiVersion": "2015-01-01",
+            "name" : "MariaDbNode01",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri" : "[concat(parameters('baseTemplate'),'templates/mariadbvm.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "resPrefix": { "value": "[variables('rpfx')]" }, 
+                    "MariaDbTshirtSize" : {"value": "[parameters('MariaDbTshirtSize')]"},
+                    "vmName": {"value": "[concat('db-',variables('rpfx'),'-vm01')]" },
+                    "adminUsername": {"value": "[parameters('adminUserName')]" },
+                    "adminPassword": {"value": "[parameters('adminPassword')]"},
+                    "availabilitySet":  {"value": "[concat('db-',variables('rpfx'),'-as')]"}
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Compute/availabilitySets/db-',variables('rpfx'),'-as')]",
+                "[concat('Microsoft.Storage/StorageAccounts/',variables('StorageAccount'))]"                
+            ]                          
+        },
+        {
+            "apiVersion": "2015-01-01",
+            "name" : "MariaDbNode02",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri" : "[concat(parameters('baseTemplate'),'templates/mariadbvm.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "resPrefix": { "value": "[variables('rpfx')]" }, 
+                    "MariaDbTshirtSize" : {"value": "[parameters('MariaDbTshirtSize')]"},
+                    "vmName": {"value": "[concat('db-',variables('rpfx'),'-vm02')]" },
+                    "adminUsername": {"value": "[parameters('adminUserName')]" },
+                    "adminPassword": {"value": "[parameters('adminPassword')]"},
+                    "availabilitySet":  {"value": "[concat('db-',variables('rpfx'),'-as')]"}
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Compute/availabilitySets/db-',variables('rpfx'),'-as')]",
+                "[concat('Microsoft.Storage/StorageAccounts/',variables('StorageAccount'))]"
+            ]                         
+        }                       
+    ]
+}
