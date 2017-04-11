@@ -69,7 +69,7 @@
           "rdplbID": "[resourceId('Microsoft.Network/loadBalancers',variables('lbSettings').rdpLBName)]",
           "sqllbID": "[resourceId('Microsoft.Network/loadBalancers',variables('lbSettings').sqlLBName)]"
         },        
-        "baseTemplateUrl" : "https://raw.githubusercontent.com/pateixei/MoodleAzure/v2/",
+        "baseTemplateUrl" : "https://raw.githubusercontent.com/picozzo92/azuremoodle/v1/",
         "storageAcctName": "[concat(parameters('resourcesPrefix'),'sa')]",
         "jboxpipName" : "[concat('jb-',parameters('resourcesPrefix'))]",
         "vmName": "[concat(parameters('resourcesPrefix'),'vm')]",
@@ -89,7 +89,7 @@
 
         "SharedStorageAccountName": "[concat(variables('storageAcctName'), uniqueString(resourceGroup().id))]",
         "JumpVmOSDiskName": "JumpVmOSDisk",
-        "JumpVmVmSize": "Standard_D1",
+        "JumpVmVmSize": "Standard_A1",
         "JumpVmStorageAccountContainerName": "vhds",
         "natPoolName": "natpool",
         "bePoolName": "bePool",
@@ -107,10 +107,10 @@
 
         "publicIPAddressID": "[resourceId('Microsoft.Network/publicIPAddresses','webpip')]",
         "siteFQDN" : "", 
-        "moodleScriptLocation": "https://raw.githubusercontent.com/pateixei/MoodleAzure/master/scripts/",
+        "moodleScriptLocation": "https://raw.githubusercontent.com/picozzo92/azuremoodle/v1/scripts/",
         "install_moodleScriptFileName": "install_moodle.sh",
         "setup_moodleScriptFileName": "setup_moodle.sh",
-        "mariadbScriptLocation": "https://raw.githubusercontent.com/pateixei/MoodleAzure/master/scripts/",
+        "mariadbScriptLocation": "https://raw.githubusercontent.com/picozzo92/azuremoodle/v1/scripts/",
         "install_mariadbScriptFileName": "install_mariadb.sh",
         "nodeDBCount" : 2,
         "subnetIPBase": "172.18.2.",

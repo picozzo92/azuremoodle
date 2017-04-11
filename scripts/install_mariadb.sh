@@ -26,7 +26,7 @@
 # $1 - number of nodes; $2 - cluster name;
 #
 #
-# Script location: https://raw.githubusercontent.com/pateixei/MoodleAzure/master/scripts/
+# Script location: https://raw.githubusercontent.com/picozzo92/azuremoodle/v1/scripts/
 
 NNODES=${1-1}
 MYSQLPASSWORD=${2:-""}
@@ -117,7 +117,7 @@ service mysql stop
 
 # create Galera config file
 
-#wget https://raw.githubusercontent.com/pateixei/azure-nginx-php-mariadb-cluster/master/files/cluster.cnf > /dev/null
+#wget https://raw.githubusercontent.com/picozzo92/azure-nginx-php-mariadb-cluster/v1/files/cluster.cnf > /dev/null
 echo -e '[mysqld]
 #mysql settings
 #wsrep_on=ON

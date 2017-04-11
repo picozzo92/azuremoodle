@@ -30,7 +30,7 @@
         },
         "baseTemplate": {
             "type": "string",
-            "defaultValue": "https://raw.githubusercontent.com/pateixei/MoodleAzure/v2/",
+            "defaultValue": "https://raw.githubusercontent.com/picozzo92/azuremoodle/v1/",
             "metadata": {
                 "description": "URL where templates are located"
             }
